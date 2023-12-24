@@ -7,13 +7,16 @@ class Queue<T> {
   public length: number;
   public head: QueueNode<T>|undefined; 
   public tail: QueueNode<T>|undefined; 
+
   constructor() {
     this.head = this.tail = undefined; 
     this.length = 0;
   }
+
   peek() {
     return this.head?.value;
   }
+
   enqueue(value: T) {
     const node = { 
       value: value, next: undefined 
@@ -30,6 +33,7 @@ class Queue<T> {
     if(tail) tail.next = node;
     return value;
   }
+
   dequeue() {
     if(!this.head) return;
     this.length--;
@@ -38,4 +42,22 @@ class Queue<T> {
     head.next = undefined;
     return head.value;
   }
+}
+
+function BubbleSort(arr: Array<number>) {
+  let sortLength = arr.length;
+  if(sortLength <= 1) {
+    return arr;
+  }
+  for(let l = 0; l < arr.length; l++) {
+    sortLength--;
+    for(let i = 0; i < sortLength; i++) {
+      if(arr[i] > arr[i + 1]) {
+        let tmpVal = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = tmpVal;
+      }
+    }
+  }
+  return arr;
 }

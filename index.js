@@ -36,18 +36,24 @@ class Queue {
         return head.value;
     }
 }
-let q = new Queue;
-console.log(q.peek());
-console.log("\n");
-q.enqueue(5);
-console.log(q.peek());
-console.log("\n");
-q.enqueue(10);
-console.log(q.peek());
-console.log("\n");
-q.dequeue();
-console.log(q.peek());
-console.log("\n");
-q.dequeue();
-console.log(q.peek());
-console.log("\n");
+function BubbleSort(arr) {
+    let sortLength = arr.length;
+    if (sortLength <= 1) {
+        return arr;
+    }
+    for (let l = 0; l < arr.length; l++) {
+        sortLength--;
+        for (let i = 0; i < sortLength; i++) {
+            if (arr[i] > arr[i + 1]) {
+                let tmpVal = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = tmpVal;
+            }
+        }
+    }
+    return arr;
+}
+let arr = [4, 1, 4, 7, 3, 2, 6, 9, 4, 0];
+console.log(arr);
+arr = BubbleSort(arr);
+console.log(arr);
