@@ -44,6 +44,36 @@ class Queue<T> {
   }
 }
 
+function LinearSearch<R>(
+  needle: R, 
+  haystack: Array<R>,
+) {
+  for(let i = 0; i < haystack.length; i++) {
+    if(needle === haystack[i]) return i;
+  }
+  return null;
+}
+
+function BinarySearch<R>(
+  needle: R,
+  haystack: Array<R>,
+) {
+  if(haystack.length === 0) return null;
+  let i = haystack.length - 1;
+  i = Math.round(i / 2);
+  while(i > 1) {
+    if(needle === haystack[i]) return i;
+    if(needle < haystack) {
+      i = Math.round(i / 2);
+    } else {
+      i = Math.round(i + i / 2);
+    }
+  }
+
+  if(haystack[i] === needle) return i;
+  return null;
+}
+
 function BubbleSort(arr: Array<number>) {
   let sortLength = arr.length;
   if(sortLength <= 1) {
