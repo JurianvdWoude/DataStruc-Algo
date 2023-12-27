@@ -91,3 +91,17 @@ function BubbleSort(arr: Array<number>) {
   }
   return arr;
 }
+
+let array = new Uint8Array(8);
+array[0] = 5;
+array[2] = 10;
+console.log(array);
+
+function time(fn: () => void) {
+  const start = Date.now();
+  fn();
+  return Date.now() - start;
+}
+
+const tests = [10, 100, 1000, 10_000, 100_000, 1_000_000];
+
