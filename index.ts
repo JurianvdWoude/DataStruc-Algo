@@ -44,6 +44,42 @@ class Queue<T> {
   }
 }
 
+class ArrayList {
+  length: number;
+  capacity: number;
+  increment: number = 8;
+  array: Uint32Array;
+  constructor(array: Array<number>) {
+    this.length = array.length;
+    const padding = this.increment - (array.length % this.increment);
+    this.capacity = array.length + padding;
+    let paddedArray = array;
+    if(padding) paddedArray.push(...(new Array(padding).fill(0)));
+    this.array = Uint32Array.from(paddedArray);
+  }
+
+  push(value: number) {
+    if(Number.isInteger(value)) {
+      if(this.length + 1 > this.capacity) {
+        this.capacity += this.increment;
+        let newArr = new Uint32Array(this.capacity);
+        newArr.set(this.array);
+        this.array = newArr;
+      }
+      this.length += 1;
+      this.array[this.length - 1] = value;
+    } else {
+      throw new Error('value provided is not an integer');
+    }
+  }
+
+  pop() {
+    const value = this.array[this.length - 1];
+    this.array[this.length - 1] = 0;
+    this.length -= 1;
+  }
+}
+
 function LinearSearch<R>(
   needle: R, 
   haystack: Array<R>,
@@ -92,16 +128,8 @@ function BubbleSort(arr: Array<number>) {
   return arr;
 }
 
-let array = new Uint8Array(8);
-array[0] = 5;
-array[2] = 10;
-console.log(array);
-
 function time(fn: () => void) {
   const start = Date.now();
   fn();
   return Date.now() - start;
 }
-
-const tests = [10, 100, 1000, 10_000, 100_000, 1_000_000];
-

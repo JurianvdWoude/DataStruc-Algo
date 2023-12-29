@@ -36,6 +36,38 @@ class Queue {
         return head.value;
     }
 }
+class ArrayList {
+    constructor(array) {
+        this.increment = 8;
+        this.length = array.length;
+        const padding = this.increment - (array.length % this.increment);
+        this.capacity = array.length + padding;
+        let paddedArray = array;
+        if (padding)
+            paddedArray.push(...(new Array(padding).fill(0)));
+        this.array = Uint32Array.from(paddedArray);
+    }
+    push(value) {
+        if (Number.isInteger(value)) {
+            if (this.length + 1 > this.capacity) {
+                this.capacity += this.increment;
+                let newArr = new Uint32Array(this.capacity);
+                newArr.set(this.array);
+                this.array = newArr;
+            }
+            this.length += 1;
+            this.array[this.length - 1] = value;
+        }
+        else {
+            throw new Error('value provided is not an integer');
+        }
+    }
+    pop() {
+        const value = this.array[this.length - 1];
+        this.array[this.length - 1] = 0;
+        this.length -= 1;
+    }
+}
 function LinearSearch(needle, haystack) {
     for (let i = 0; i < haystack.length; i++) {
         if (needle === haystack[i])
@@ -79,8 +111,37 @@ function BubbleSort(arr) {
     }
     return arr;
 }
-let arr = [3, 7, 4, 8, 5, 3, 2, 6, 8, 4];
-let sortedArr = BubbleSort(arr);
-const lin = LinearSearch(8, sortedArr);
-const bin = BinarySearch(8, sortedArr);
-console.log(`${lin} === ${bin}`);
+function time(fn) {
+    const start = Date.now();
+    fn();
+    return Date.now() - start;
+}
+let a = [1, 2, 3, 4, 5, 6];
+let arr = new ArrayList(a);
+console.log(`initial array: ${arr.array}`);
+console.log(`length: ${arr.length}`);
+console.log(`capacity: ${arr.capacity}`);
+arr.push(7);
+console.log(`added 7: ${arr.array}`);
+console.log(`length: ${arr.length}`);
+console.log(`capacity: ${arr.capacity}`);
+arr.push(8);
+console.log(`added 8: ${arr.array}`);
+console.log(`length: ${arr.length}`);
+console.log(`capacity: ${arr.capacity}`);
+arr.push(9);
+console.log(`added 9: ${arr.array}`);
+console.log(`length: ${arr.length}`);
+console.log(`capacity: ${arr.capacity}`);
+console.log(`pop: ${arr.pop()}`);
+console.log(`removed 9: ${arr.array}`);
+console.log(`length: ${arr.length}`);
+console.log(`capacity: ${arr.capacity}`);
+console.log(`pop: ${arr.pop()}`);
+console.log(`removed 8: ${arr.array}`);
+console.log(`length: ${arr.length}`);
+console.log(`capacity: ${arr.capacity}`);
+console.log(`pop: ${arr.pop()}`);
+console.log(`removed 7: ${arr.array}`);
+console.log(`length: ${arr.length}`);
+console.log(`capacity: ${arr.capacity}`);
