@@ -59,7 +59,10 @@ class ArrayList {
   }
 
   push(value: number) {
-    if(Number.isInteger(value)) {
+    if(
+      Number.isInteger(value)
+      && value >= 0
+    ) {
       if(this.length + 1 > this.capacity) {
         this.capacity += this.increment;
         let newArr = new Uint32Array(this.capacity);
@@ -69,7 +72,7 @@ class ArrayList {
       this.length += 1;
       this.array[this.length - 1] = value;
     } else {
-      throw new Error('value provided is not an integer');
+      throw new Error('value provided is not an integer or positive');
     }
   }
 
@@ -125,6 +128,36 @@ function BubbleSort(arr: Array<number>) {
       }
     }
   }
+  return arr;
+}
+
+function QuickSort(arr: Array<number>) {
+  function partition(arr: Array<number>, lo: number, hi: number) {
+    let idx = lo - 1;
+    let pivot = arr[hi];
+    for(let i = lo; i < hi; i++) {
+      if(arr[i] < pivot) {
+        idx++;
+        const tmp = arr[i];
+        arr[i] = arr[idx];
+        arr[idx] = tmp;
+      }
+    }
+    idx++;
+    arr[hi] = arr[idx];
+    arr[idx] = pivot;
+    return idx;
+  }
+
+  function qs(arr: Array<number>, lo: number, hi: number) {
+    if(lo >= hi) return;
+
+    const partIdx = partition(arr, lo, hi);
+    qs(arr, partIdx + 1, hi);
+    qs(arr, lo, partIdx - 1);
+  }
+
+  qs(arr, 0, arr.length - 1);
   return arr;
 }
 

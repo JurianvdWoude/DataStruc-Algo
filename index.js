@@ -48,7 +48,8 @@ class ArrayList {
         this.array = Uint32Array.from(paddedArray);
     }
     push(value) {
-        if (Number.isInteger(value)) {
+        if (Number.isInteger(value)
+            && value >= 0) {
             if (this.length + 1 > this.capacity) {
                 this.capacity += this.increment;
                 let newArr = new Uint32Array(this.capacity);
@@ -59,7 +60,7 @@ class ArrayList {
             this.array[this.length - 1] = value;
         }
         else {
-            throw new Error('value provided is not an integer');
+            throw new Error('value provided is not an integer or positive');
         }
     }
     pop() {
@@ -111,37 +112,38 @@ function BubbleSort(arr) {
     }
     return arr;
 }
+function QuickSort(arr) {
+    function partition(arr, lo, hi) {
+        let idx = lo - 1;
+        let pivot = arr[hi];
+        for (let i = lo; i < hi; i++) {
+            if (arr[i] < pivot) {
+                idx++;
+                const tmp = arr[i];
+                arr[i] = arr[idx];
+                arr[idx] = tmp;
+            }
+        }
+        idx++;
+        arr[hi] = arr[idx];
+        arr[idx] = pivot;
+        return idx;
+    }
+    function qs(arr, lo, hi) {
+        if (lo >= hi)
+            return;
+        const partIdx = partition(arr, lo, hi);
+        qs(arr, partIdx + 1, hi);
+        qs(arr, lo, partIdx - 1);
+    }
+    qs(arr, 0, arr.length - 1);
+    return arr;
+}
 function time(fn) {
     const start = Date.now();
     fn();
     return Date.now() - start;
 }
-let a = [1, 2, 3, 4, 5, 6];
-let arr = new ArrayList(a);
-console.log(`initial array: ${arr.array}`);
-console.log(`length: ${arr.length}`);
-console.log(`capacity: ${arr.capacity}`);
-arr.push(7);
-console.log(`added 7: ${arr.array}`);
-console.log(`length: ${arr.length}`);
-console.log(`capacity: ${arr.capacity}`);
-arr.push(8);
-console.log(`added 8: ${arr.array}`);
-console.log(`length: ${arr.length}`);
-console.log(`capacity: ${arr.capacity}`);
-arr.push(9);
-console.log(`added 9: ${arr.array}`);
-console.log(`length: ${arr.length}`);
-console.log(`capacity: ${arr.capacity}`);
-console.log(`pop: ${arr.pop()}`);
-console.log(`removed 9: ${arr.array}`);
-console.log(`length: ${arr.length}`);
-console.log(`capacity: ${arr.capacity}`);
-console.log(`pop: ${arr.pop()}`);
-console.log(`removed 8: ${arr.array}`);
-console.log(`length: ${arr.length}`);
-console.log(`capacity: ${arr.capacity}`);
-console.log(`pop: ${arr.pop()}`);
-console.log(`removed 7: ${arr.array}`);
-console.log(`length: ${arr.length}`);
-console.log(`capacity: ${arr.capacity}`);
+let arr = [9, 2, 5, 7, 4, 7, 8, 2, 3, 1, 1, 5, 6];
+let newArr = QuickSort(arr);
+console.log(newArr);
