@@ -1,12 +1,18 @@
-type QueueNode<U> = {
+type QNode<U> = {
   value: U|undefined,
-  next: QueueNode<U>|undefined,
+  next: QNode<U>|undefined,
+}
+
+type LNode<U> = {
+  value: U|undefined,
+  next: LNode<U>|undefined,
+  prev: LNode<U>|undefined,
 }
 
 class Queue<T> {
   public length: number;
-  public head: QueueNode<T>|undefined; 
-  public tail: QueueNode<T>|undefined; 
+  public head: QNode<T>|undefined; 
+  public tail: QNode<T>|undefined; 
 
   constructor() {
     this.head = this.tail = undefined; 
@@ -20,7 +26,7 @@ class Queue<T> {
   enqueue(value: T) {
     const node = { 
       value: value, next: undefined 
-    } as QueueNode<T>;
+    } as QNode<T>;
     this.length++;
     if(!this.head) {
       this.head = node;
@@ -41,6 +47,124 @@ class Queue<T> {
     this.head = head.next;
     head.next = undefined;
     return head.value;
+  }
+}
+
+class DoublyLinkedList<T> {
+  public length: number;
+  public head: LNode<T>|undefined; 
+  public tail: LNode<T>|undefined; 
+
+  constructor() {
+    this.head = this.tail = undefined; 
+    this.length = 0;
+  }
+
+  public prepend(value: T): void {
+    let node = { value: value } as LNode<T>;
+    this.length++;
+    if(!this.head || !this.tail) {
+      this.head = this.tail = node;
+      return;
+    }
+    node.next = this.head;
+    this.head.prev = node;
+    this.head = node;
+  }
+
+  public insertAt(idx: number, value: T): void {
+    if(idx < 0 || idx > this.length) throw new Error('invalid index given for insertAt.');
+    if(idx === this.length) {
+      this.append(value);
+      return;
+    }
+    if(idx === 0) {
+      this.prepend(value);
+      return;
+    }
+    this.length++;
+    let curr = this.getByIdx(idx);
+    let node = { value: value } as LNode<T>;
+    node.next = curr!.next;
+    node.prev = curr;
+    curr!.next!.prev = node;
+    curr!.next = node;
+  }
+
+  public append(value: T): void {
+    let node = { value: value } as LNode<T>;
+    this.length++;
+    if(!this.head || !this.tail) {
+      this.head = this.tail = node;
+      return;
+    }
+    node.prev = this.tail;
+    this.tail.next = node;
+    this.tail = node;
+  }
+
+  public toString(): string {
+    if(!this.head || !this.tail) return '';
+    let str = '';
+    let curr: LNode<T> | undefined = this.head;
+    for(let i = 0; curr && i < this.length; i++) {
+      if(i > 0) str += ', ';
+      str += curr.value;
+      curr = curr.next;
+    }
+    return str;
+  }
+
+  public remove(value: T): void {
+    let curr = this.head;
+    for(let i = 0; curr && i < this.length; i++) {
+      if(curr.value === value) break;
+      curr = curr.next;
+    }
+
+    if(!curr) throw new Error('unable to remove the value');
+    this.removeNode(curr);
+  }
+
+  public get(idx: number): T|void {
+    if(idx < 0 || idx > this.length) throw new Error('invalid index given for get.');
+    let node = this.getByIdx(idx);
+    if(node) return node.value;
+  }
+
+  public removeAt(idx: number): void {
+    if(idx < 0 || idx > this.length) throw new Error('invalid index given for get.');
+    let curr = this.getByIdx(idx);
+    if(!curr) throw new Error('value doesnt exist');
+    this.removeNode(curr);
+  }
+
+  private getByIdx(idx: number): LNode<T>|undefined {
+    let curr = this.head;
+    for(let i = 0; curr && i < idx; i++) {
+      curr = curr.next;
+    }
+    return curr;
+  }
+
+  private removeNode(curr: LNode<T>): void {
+    this.length--;
+    if(curr === this.head) {
+      if(!curr.next || curr.next === this.head) {
+        this.head = this.tail = undefined;
+        return;
+      }
+      curr.next.prev = undefined;
+      this.head = curr.next;
+    }
+
+    if(curr === this.tail) {
+      if(!curr.prev) throw new Error('something went wrong');
+      this.tail = curr.prev;
+      this.tail.next = undefined;
+    }
+    curr.prev!.next = curr.next;
+    curr.next!.prev = curr.prev;
   }
 }
 
@@ -204,3 +328,20 @@ function time(fn: () => void) {
   fn();
   return Date.now() - start;
 }
+
+let list = new DoublyLinkedList();
+list.append(3);
+console.log('append 3: ' + list.toString());
+list.append(4);
+console.log('append 4: ' + list.toString());
+list.prepend(1);
+console.log('prepend 1: ' + list.toString());
+list.prepend(0);
+console.log('prepend 0: ' + list.toString());
+list.insertAt(1, 2);
+console.log('insert 1 at idx 1: ' + list.toString());
+console.log('get at idx 3: ' + list.get(3));
+list.remove(2);
+console.log('remove 2: ' + list.toString());
+list.removeAt(2);
+console.log('remove at idx 2: ' + list.toString());

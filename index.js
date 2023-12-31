@@ -36,6 +36,118 @@ class Queue {
         return head.value;
     }
 }
+class DoublyLinkedList {
+    constructor() {
+        this.head = this.tail = undefined;
+        this.length = 0;
+    }
+    prepend(value) {
+        let node = { value: value };
+        this.length++;
+        if (!this.head || !this.tail) {
+            this.head = this.tail = node;
+            return;
+        }
+        node.next = this.head;
+        this.head.prev = node;
+        this.head = node;
+    }
+    insertAt(idx, value) {
+        if (idx < 0 || idx > this.length)
+            throw new Error('invalid index given for insertAt.');
+        if (idx === this.length) {
+            this.append(value);
+            return;
+        }
+        if (idx === 0) {
+            this.prepend(value);
+            return;
+        }
+        this.length++;
+        let curr = this.getByIdx(idx);
+        let node = { value: value };
+        node.next = curr.next;
+        node.prev = curr;
+        curr.next.prev = node;
+        curr.next = node;
+    }
+    append(value) {
+        let node = { value: value };
+        this.length++;
+        if (!this.head || !this.tail) {
+            this.head = this.tail = node;
+            return;
+        }
+        node.prev = this.tail;
+        this.tail.next = node;
+        this.tail = node;
+    }
+    toString() {
+        if (!this.head || !this.tail)
+            return '';
+        let str = '';
+        let curr = this.head;
+        for (let i = 0; curr && i < this.length; i++) {
+            if (i > 0)
+                str += ', ';
+            str += curr.value;
+            curr = curr.next;
+        }
+        return str;
+    }
+    remove(value) {
+        let curr = this.head;
+        for (let i = 0; curr && i < this.length; i++) {
+            if (curr.value === value)
+                break;
+            curr = curr.next;
+        }
+        if (!curr)
+            throw new Error('unable to remove the value');
+        this.removeNode(curr);
+    }
+    get(idx) {
+        if (idx < 0 || idx > this.length)
+            throw new Error('invalid index given for get.');
+        let node = this.getByIdx(idx);
+        if (node)
+            return node.value;
+    }
+    removeAt(idx) {
+        if (idx < 0 || idx > this.length)
+            throw new Error('invalid index given for get.');
+        let curr = this.getByIdx(idx);
+        if (!curr)
+            throw new Error('value doesnt exist');
+        this.removeNode(curr);
+    }
+    getByIdx(idx) {
+        let curr = this.head;
+        for (let i = 0; curr && i < idx; i++) {
+            curr = curr.next;
+        }
+        return curr;
+    }
+    removeNode(curr) {
+        this.length--;
+        if (curr === this.head) {
+            if (!curr.next || curr.next === this.head) {
+                this.head = this.tail = undefined;
+                return;
+            }
+            curr.next.prev = undefined;
+            this.head = curr.next;
+        }
+        if (curr === this.tail) {
+            if (!curr.prev)
+                throw new Error('something went wrong');
+            this.tail = curr.prev;
+            this.tail.next = undefined;
+        }
+        curr.prev.next = curr.next;
+        curr.next.prev = curr.prev;
+    }
+}
 class ArrayList {
     constructor(array) {
         this.increment = 8;
@@ -176,3 +288,19 @@ function time(fn) {
     fn();
     return Date.now() - start;
 }
+let list = new DoublyLinkedList();
+list.append(3);
+console.log('append 3: ' + list.toString());
+list.append(4);
+console.log('append 4: ' + list.toString());
+list.prepend(1);
+console.log('prepend 1: ' + list.toString());
+list.prepend(0);
+console.log('prepend 0: ' + list.toString());
+list.insertAt(1, 2);
+console.log('insert 1 at idx 1: ' + list.toString());
+console.log('get at idx 3: ' + list.get(3));
+list.remove(2);
+console.log('remove 2: ' + list.toString());
+list.removeAt(2);
+console.log('remove at idx 2: ' + list.toString());
