@@ -116,6 +116,7 @@ function QuickSort(arr) {
     function partition(arr, lo, hi) {
         let idx = lo - 1;
         let pivot = arr[hi];
+        // sort all values based onnthe pivot value
         for (let i = lo; i < hi; i++) {
             if (arr[i] < pivot) {
                 idx++;
@@ -124,26 +125,54 @@ function QuickSort(arr) {
                 arr[idx] = tmp;
             }
         }
+        // sort the pivot value
         idx++;
         arr[hi] = arr[idx];
         arr[idx] = pivot;
         return idx;
     }
-    function qs(arr, lo, hi) {
+    function sort(arr, lo, hi) {
         if (lo >= hi)
             return;
         const partIdx = partition(arr, lo, hi);
-        qs(arr, partIdx + 1, hi);
-        qs(arr, lo, partIdx - 1);
+        sort(arr, partIdx + 1, hi);
+        sort(arr, lo, partIdx - 1);
     }
-    qs(arr, 0, arr.length - 1);
+    sort(arr, 0, arr.length - 1);
     return arr;
+}
+function MergeSort(arr) {
+    function partition(arr, lo, hi) {
+        if (lo == hi) {
+            if (arr[lo] !== undefined)
+                return [arr[lo]];
+            return [];
+        }
+        if (lo > hi) {
+            return [];
+        }
+        let pivot = Math.round(lo + (hi - lo) * 0.5);
+        // continue partitioning until returning the smallest slice, then merge and return them
+        let left = partition(arr, lo, pivot - 1);
+        let right = partition(arr, pivot, hi);
+        return merge(left, right);
+    }
+    function merge(left, right) {
+        let arr = [];
+        while (left.length && right.length) {
+            if (left[0] < right[0]) {
+                arr.push(left.shift());
+            }
+            else {
+                arr.push(right.shift());
+            }
+        }
+        return [...arr, ...left, ...right];
+    }
+    return partition(arr, 0, arr.length);
 }
 function time(fn) {
     const start = Date.now();
     fn();
     return Date.now() - start;
 }
-let arr = [9, 2, 5, 7, 4, 7, 8, 2, 3, 1, 1, 5, 6];
-let newArr = QuickSort(arr);
-console.log(newArr);
