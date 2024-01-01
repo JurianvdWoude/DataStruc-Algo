@@ -85,10 +85,10 @@ class DoublyLinkedList<T> {
     this.length++;
     let curr = this.getByIdx(idx);
     let node = { value: value } as LNode<T>;
-    node.next = curr!.next;
-    node.prev = curr;
-    curr!.next!.prev = node;
-    curr!.next = node;
+    node.next = curr;
+    node.prev = curr!.prev;
+    curr!.prev!.next = node;
+    curr!.prev = node;
   }
 
   public append(value: T): void {
@@ -104,14 +104,15 @@ class DoublyLinkedList<T> {
   }
 
   public toString(): string {
-    if(!this.head || !this.tail) return '';
-    let str = '';
+    if(!this.head || !this.tail) return '()';
+    let str = '( ';
     let curr: LNode<T> | undefined = this.head;
     for(let i = 0; curr && i < this.length; i++) {
       if(i > 0) str += ', ';
       str += curr.value;
       curr = curr.next;
     }
+    str += ' )';
     return str;
   }
 
@@ -328,20 +329,3 @@ function time(fn: () => void) {
   fn();
   return Date.now() - start;
 }
-
-let list = new DoublyLinkedList();
-list.append(3);
-console.log('append 3: ' + list.toString());
-list.append(4);
-console.log('append 4: ' + list.toString());
-list.prepend(1);
-console.log('prepend 1: ' + list.toString());
-list.prepend(0);
-console.log('prepend 0: ' + list.toString());
-list.insertAt(1, 2);
-console.log('insert 1 at idx 1: ' + list.toString());
-console.log('get at idx 3: ' + list.get(3));
-list.remove(2);
-console.log('remove 2: ' + list.toString());
-list.removeAt(2);
-console.log('remove at idx 2: ' + list.toString());
