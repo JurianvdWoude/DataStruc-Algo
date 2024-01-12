@@ -1,5 +1,3 @@
-import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
-
 type QNode<U> = {
   value: U|undefined,
   next: QNode<U>|undefined,
@@ -83,6 +81,26 @@ class Tree {
     
     }
     this.head = split(arr)
+  }
+
+  public BFSearch(needle: number) {
+    let queue = new Queue<TreeNode<number>|undefined>
+    queue.enqueue(this.head)
+
+    while(queue.length) {
+      let curr = queue.dequeue();
+      if(!curr) {
+        continue
+      }
+
+      if(curr.value === needle) {
+        return true
+      }
+
+      queue.enqueue(curr.left)
+      queue.enqueue(curr.right)
+    }
+    return false;
   }
 
   public toArray(): Array<number> {
@@ -388,3 +406,7 @@ const arr = [1,6,3,8,4,0,6]
 console.log(`array: ${arr}`)
 let tree = new Tree(arr)
 console.log(`tree: ${tree.toArray()}`)
+console.log(`has needle (8): ${tree.BFSearch(8)}`)
+console.log(`has needle (3): ${tree.BFSearch(3)}`)
+console.log(`has needle (5): ${tree.BFSearch(5)}`)
+

@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class Queue {
     constructor() {
         this.head = this.tail = undefined;
@@ -59,6 +58,22 @@ class Tree {
             return curr;
         }
         this.head = split(arr);
+    }
+    BFSearch(needle) {
+        let queue = new Queue;
+        queue.enqueue(this.head);
+        while (queue.length) {
+            let curr = queue.dequeue();
+            if (!curr) {
+                continue;
+            }
+            if (curr.value === needle) {
+                return true;
+            }
+            queue.enqueue(curr.left);
+            queue.enqueue(curr.right);
+        }
+        return false;
     }
     toArray() {
         function walk(curr, list) {
@@ -334,3 +349,6 @@ const arr = [1, 6, 3, 8, 4, 0, 6];
 console.log(`array: ${arr}`);
 let tree = new Tree(arr);
 console.log(`tree: ${tree.toArray()}`);
+console.log(`has needle (8): ${tree.BFSearch(8)}`);
+console.log(`has needle (3): ${tree.BFSearch(3)}`);
+console.log(`has needle (5): ${tree.BFSearch(5)}`);
