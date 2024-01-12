@@ -1,3 +1,5 @@
+import { valueOrDefault } from "chart.js/dist/helpers/helpers.core";
+
 type QNode<U> = {
   value: U|undefined,
   next: QNode<U>|undefined,
@@ -7,6 +9,12 @@ type LNode<U> = {
   value: U|undefined,
   next: LNode<U>|undefined,
   prev: LNode<U>|undefined,
+}
+
+type TreeNode<U> = {
+  value: U|undefined,
+  left: TreeNode<U>|undefined,
+  right: TreeNode<U>|undefined,
 }
 
 class Queue<T> {
@@ -47,6 +55,52 @@ class Queue<T> {
     this.head = head.next;
     head.next = undefined;
     return head.value;
+  }
+}
+
+class Tree {
+  public size: number;
+  public head: TreeNode<number>|undefined
+  constructor(arr?: Array<number>) {
+    if(!arr || !arr.length) {
+      this.size = 0
+      this.head = undefined
+      return
+    }
+    this.size = arr.length
+    function split(arr: Array<number>) {
+      if(arr.length <= 1) {
+        return {value: arr[0]} as TreeNode<number>
+      }
+      if(!arr.length) {
+        return
+      }
+      const middle = Math.floor(arr.length / 2)
+      let curr = {value: arr[middle]} as TreeNode<number>
+      curr.left = split(arr.slice(0, middle))
+      curr.right = split(arr.slice(middle + 1, arr.length))
+      return curr
+    
+    }
+    this.head = split(arr)
+  }
+
+  public toArray(): Array<number> {
+    function walk(curr: TreeNode<number>, list: Array<number>) {
+      if(!curr) {
+        return list;
+      }
+
+      walk(curr.left as TreeNode<number>, list)
+      list.push(curr.value as number)
+      walk(curr.right as TreeNode<number>, list)
+
+      return list
+    }
+    if(this.head) {
+      return walk(this.head, [])
+    }
+    else return []
   }
 }
 
@@ -329,3 +383,8 @@ function time(fn: () => void) {
   fn();
   return Date.now() - start;
 }
+
+const arr = [1,6,3,8,4,0,6]
+console.log(`array: ${arr}`)
+let tree = new Tree(arr)
+console.log(`tree: ${tree.toArray()}`)

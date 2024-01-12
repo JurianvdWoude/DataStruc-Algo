@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class Queue {
     constructor() {
         this.head = this.tail = undefined;
@@ -34,6 +35,46 @@ class Queue {
         this.head = head.next;
         head.next = undefined;
         return head.value;
+    }
+}
+class Tree {
+    constructor(arr) {
+        if (!arr || !arr.length) {
+            this.size = 0;
+            this.head = undefined;
+            return;
+        }
+        this.size = arr.length;
+        function split(arr) {
+            if (arr.length <= 1) {
+                return { value: arr[0] };
+            }
+            if (!arr.length) {
+                return;
+            }
+            const middle = Math.floor(arr.length / 2);
+            let curr = { value: arr[middle] };
+            curr.left = split(arr.slice(0, middle));
+            curr.right = split(arr.slice(middle + 1, arr.length));
+            return curr;
+        }
+        this.head = split(arr);
+    }
+    toArray() {
+        function walk(curr, list) {
+            if (!curr) {
+                return list;
+            }
+            walk(curr.left, list);
+            list.push(curr.value);
+            walk(curr.right, list);
+            return list;
+        }
+        if (this.head) {
+            return walk(this.head, []);
+        }
+        else
+            return [];
     }
 }
 class DoublyLinkedList {
@@ -289,3 +330,7 @@ function time(fn) {
     fn();
     return Date.now() - start;
 }
+const arr = [1, 6, 3, 8, 4, 0, 6];
+console.log(`array: ${arr}`);
+let tree = new Tree(arr);
+console.log(`tree: ${tree.toArray()}`);
