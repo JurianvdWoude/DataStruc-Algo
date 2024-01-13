@@ -103,6 +103,24 @@ class Tree {
     return false;
   }
 
+  public compare(otherTree: Tree): Boolean {
+    function compare(a: TreeNode<number>|undefined, b: TreeNode<number>|undefined): Boolean {
+      if(a === undefined && b === undefined) {
+        return true;
+      }
+      if(a === undefined || b === undefined) {
+        return false;
+      } 
+      if(a.value !== b.value) {
+        return false;
+      }
+
+      return compare(a.left, b.left) && compare(a.right, b.right);
+    }
+
+    return compare(this.head, otherTree.head)
+  }
+
   public toArray(): Array<number> {
     function walk(curr: TreeNode<number>, list: Array<number>) {
       if(!curr) {
@@ -409,4 +427,17 @@ console.log(`tree: ${tree.toArray()}`)
 console.log(`has needle (8): ${tree.BFSearch(8)}`)
 console.log(`has needle (3): ${tree.BFSearch(3)}`)
 console.log(`has needle (5): ${tree.BFSearch(5)}`)
-
+let otherTree = new Tree(arr)
+console.log(`
+  tree 1: ${tree.toArray()}\n
+  tree 2: ${otherTree.toArray()}\n
+  Same? ${tree.compare(otherTree)}
+`)
+let arr2 = arr
+arr2[0] = 2 
+otherTree = new Tree(arr2)
+console.log(`
+  tree 1: ${tree.toArray()}\n
+  tree 2: ${otherTree.toArray()}\n
+  Same? ${tree.compare(otherTree)}
+`)
